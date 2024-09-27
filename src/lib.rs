@@ -3,15 +3,19 @@ use std::time::Duration;
 
 use ilhook::x64::Registers;
 use interceptor::Interceptor;
-use windows::core::{s, w, PCSTR, PCWSTR};
+use windows::core::{w, PCSTR, PCWSTR};
 use windows::Win32::System::Console;
 use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
 use windows::Win32::{Foundation::HINSTANCE, System::LibraryLoader::GetModuleHandleA};
 
 mod interceptor;
+mod offsets;
 
-const FPAKFILE_CHECK: usize = 0x3D2F460;
-const KUROHTTP_GET: usize = 0xFC8CF0;
+#[cfg(feature = "cn_beta_1_3_0")]
+use offsets::CN_BETA_1_3_0_CONFIG as CONFIG;
+
+#[cfg(feature = "os_live_1_3_0")]
+use offsets::OS_LIVE_1_3_0_CONFIG as CONFIG;
 
 unsafe fn thread_func() {
     Console::AllocConsole().unwrap();
@@ -24,28 +28,28 @@ unsafe fn thread_func() {
     let mut interceptor = Interceptor::new();
     interceptor
         .replace(
-            (module.0 as usize) + FPAKFILE_CHECK,
+            (module.0 as usize) + CONFIG.f_pak_file_check,
             fpakfile_check_replacement,
         )
         .unwrap();
 
     interceptor
-        .attach((module.0 as usize) + KUROHTTP_GET, on_kurohttp_get)
+        .attach((module.0 as usize) + CONFIG.kuro_http_get, on_kurohttp_get)
         .unwrap();
 
     let krsdk_ex = loop {
-        match GetModuleHandleA(s!("KRSDKEx.dll")) {
+        match GetModuleHandleA(CONFIG.sdk_dll) {
             Ok(handle) => break handle,
             Err(_) => thread::sleep(Duration::from_millis(1)),
         }
     };
 
     interceptor
-        .replace((krsdk_ex.0 as usize) + 0x4A690, dummy)
+        .replace((krsdk_ex.0 as usize) + CONFIG.eula_accept, dummy)
         .unwrap();
 
     interceptor
-        .replace((krsdk_ex.0 as usize) + 0x8BB80, dummy)
+        .replace((krsdk_ex.0 as usize) + CONFIG.sdk_go_away, dummy)
         .unwrap();
 
     println!("Successfully initialized!");
