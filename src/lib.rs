@@ -11,11 +11,7 @@ use windows::Win32::{Foundation::HINSTANCE, System::LibraryLoader::GetModuleHand
 mod interceptor;
 mod offsets;
 
-#[cfg(feature = "cn_beta_1_3_0")]
-use offsets::CN_BETA_1_3_0_CONFIG as CONFIG;
-
-#[cfg(feature = "os_live_1_3_0")]
-use offsets::OS_LIVE_1_3_0_CONFIG as CONFIG;
+use offsets::CONFIG;
 
 unsafe fn thread_func() {
     Console::AllocConsole().unwrap();
@@ -38,18 +34,18 @@ unsafe fn thread_func() {
         .unwrap();
 
     let krsdk_ex = loop {
-        match GetModuleHandleA(CONFIG.sdk_dll) {
+        match GetModuleHandleA(CONFIG.disable_sdk.sdk_dll) {
             Ok(handle) => break handle,
             Err(_) => thread::sleep(Duration::from_millis(1)),
         }
     };
 
     interceptor
-        .replace((krsdk_ex.0 as usize) + CONFIG.eula_accept, dummy)
+        .replace((krsdk_ex.0 as usize) + CONFIG.disable_sdk.eula_accept, dummy)
         .unwrap();
 
     interceptor
-        .replace((krsdk_ex.0 as usize) + CONFIG.sdk_go_away, dummy)
+        .replace((krsdk_ex.0 as usize) + CONFIG.disable_sdk.sdk_go_away, dummy)
         .unwrap();
 
     println!("Successfully initialized!");
