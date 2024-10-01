@@ -1,5 +1,5 @@
 use ilhook::x64::{
-    CallbackOption, HookFlags, HookPoint, HookType, Hooker, JmpBackRoutine, RetnRoutine,
+    CallbackOption, Hooker, HookFlags, HookPoint, HookType, JmpBackRoutine, RetnRoutine,
 };
 
 pub struct Interceptor {
@@ -12,7 +12,7 @@ impl Interceptor {
     }
 
     #[allow(dead_code)]
-    pub unsafe fn attach(
+    pub fn attach(
         &mut self,
         addr: usize,
         routine: JmpBackRoutine,
@@ -25,12 +25,12 @@ impl Interceptor {
             HookFlags::empty(),
         );
 
-        let hook_point = hooker.hook()?;
+        let hook_point = unsafe { hooker.hook() }?;
         self.hooks.push(hook_point);
         Ok(())
     }
 
-    pub unsafe fn replace(
+    pub fn replace(
         &mut self,
         addr: usize,
         routine: RetnRoutine,
@@ -43,7 +43,7 @@ impl Interceptor {
             HookFlags::empty(),
         );
 
-        let hook_point = hooker.hook()?;
+        let hook_point = unsafe { hooker.hook() }?;
         self.hooks.push(hook_point);
         Ok(())
     }

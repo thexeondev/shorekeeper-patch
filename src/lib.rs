@@ -2,39 +2,48 @@ use std::thread;
 use std::time::Duration;
 
 use ilhook::x64::Registers;
-use interceptor::Interceptor;
-use windows::core::{w, PCSTR, PCWSTR};
+use windows::core::{PCSTR, PCWSTR, w};
+use windows::Win32::Foundation::HINSTANCE;
 use windows::Win32::System::Console;
+use windows::Win32::System::LibraryLoader::GetModuleHandleA;
 use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
-use windows::Win32::{Foundation::HINSTANCE, System::LibraryLoader::GetModuleHandleA};
+
+use interceptor::Interceptor;
+use offsets::CONFIG;
 
 mod interceptor;
 mod offsets;
 
-use offsets::CONFIG;
-
-unsafe fn thread_func() {
-    Console::AllocConsole().unwrap();
-    println!("Wuthering Waves signature check bypass");
+fn thread_func() {
+    unsafe { Console::AllocConsole() }.unwrap();
+    println!("Wuthering Waves essential binary patcher");
     println!("Don't forget to visit https://discord.gg/reversedrooms");
 
-    let module = GetModuleHandleA(PCSTR::null()).unwrap();
-    println!("Base: {:X}", module.0 as usize);
+    println!("Waiting for ACE init");
+    let module = unsafe { GetModuleHandleA(PCSTR::null()) }.unwrap();
+    let pak_file_offset = ((module.0 as usize) + CONFIG.f_pak_file_check) as *const u128;
+    loop {
+        if unsafe { std::ptr::read(pak_file_offset) } == CONFIG.f_pak_file_check_preamble {
+            println!("ACE Initialization finished");
+            break;
+        }
+        thread::sleep(Duration::from_millis(1))
+    }
 
     let mut interceptor = Interceptor::new();
     interceptor
-        .replace(
-            (module.0 as usize) + CONFIG.f_pak_file_check,
-            fpakfile_check_replacement,
-        )
+        .replace((module.0 as usize) + CONFIG.f_pak_file_check, fpakfile_check_replacement)
         .unwrap();
+
+    let module = unsafe { GetModuleHandleA(PCSTR::null()) }.unwrap();
+    println!("Game base: {:X}", module.0 as usize);
 
     interceptor
         .attach((module.0 as usize) + CONFIG.kuro_http_get, on_kurohttp_get)
         .unwrap();
 
     let krsdk_ex = loop {
-        match GetModuleHandleA(CONFIG.disable_sdk.sdk_dll) {
+        match unsafe { GetModuleHandleA(CONFIG.disable_sdk.sdk_dll) } {
             Ok(handle) => break handle,
             Err(_) => thread::sleep(Duration::from_millis(1)),
         }
@@ -47,8 +56,8 @@ unsafe fn thread_func() {
     interceptor
         .replace((krsdk_ex.0 as usize) + CONFIG.disable_sdk.sdk_go_away, dummy)
         .unwrap();
-
     println!("Successfully initialized!");
+
     thread::sleep(Duration::from_secs(u64::MAX));
 }
 
