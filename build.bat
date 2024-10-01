@@ -6,12 +6,14 @@ GOTO:MAIN
         cargo build --release --no-default-features -F %~1
         set features=%~1:,=-%
         COPY target\release\shorekeeper.dll build\shorekeeper-%~1.dll
+        cargo clean
     ENDLOCAL
 EXIT /B 0
 
 :MAIN
 if exist "build" rd /q /s "build"
 mkdir build
+cargo clean
 
 : Build for cn_beta_1_3_0
 call:cargoReleaseBuild cn_beta_1_3_0
