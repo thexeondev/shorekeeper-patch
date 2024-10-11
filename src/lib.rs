@@ -21,7 +21,7 @@ fn thread_func() {
 
     println!("Waiting for ACE init");
     let module = unsafe { GetModuleHandleA(PCSTR::null()) }.unwrap();
-    let pak_file_offset = ((module.0 as usize) + CONFIG.f_pak_file_check) as *const u128;
+    let pak_file_offset = ((module.0 as usize) + CONFIG.f_pak_file_check) as *const u64;
     loop {
         if unsafe { std::ptr::read(pak_file_offset) } == CONFIG.f_pak_file_check_preamble {
             println!("ACE Initialization finished");

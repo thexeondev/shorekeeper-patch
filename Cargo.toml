@@ -1,13 +1,14 @@
 [package]
-name = "shorekeeper-patch"
+name = "camellya-patch"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "shorekeeper"
+name = "camellya"
 crate-type = ["cdylib"]
 
 [features]
+cn_beta_1_4_0 = []
 cn_beta_1_3_0 = []
 cn_live_1_3_0 = []
 os_live_1_3_0 = []
