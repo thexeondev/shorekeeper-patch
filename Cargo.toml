@@ -1,10 +1,10 @@
 [package]
-name = "camellya-patch"
+name = "wicked-waifus-win-patch"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "camellya"
+name = "wicked_waifus_win"
 crate-type = ["cdylib"]
 
 [features]

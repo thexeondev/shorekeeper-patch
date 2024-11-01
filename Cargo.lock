@@ -18,16 +18,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 
 [[package]]
-name = "camellya-patch"
-version = "0.1.0"
-dependencies = [
- "ilhook",
- "regex",
- "widestring",
- "windows",
-]
-
-[[package]]
 name = "iced-x86"
 version = "1.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -152,6 +142,16 @@ name = "unicode-ident"
 version = "1.0.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
+
+[[package]]
+name = "wicked-waifus-win-patch"
+version = "0.1.0"
+dependencies = [
+ "ilhook",
+ "regex",
+ "widestring",
+ "windows",
+]
 
 [[package]]
 name = "widestring"

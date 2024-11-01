@@ -5,7 +5,7 @@ GOTO:MAIN
         cargo clean
         cargo build --release --no-default-features -F %~1
         set features=%~1:,=-%
-        COPY target\release\camellya.dll build\camellya-%~1.dll
+        COPY target\release\wicked_waifus_win.dll build\wicked-waifus-win-%~1.dll
         cargo clean
     ENDLOCAL
 EXIT /B 0
@@ -24,4 +24,4 @@ call:cargoReleaseBuild cn_live_1_3_0
 : Build for os_live_1_3_0
 call:cargoReleaseBuild os_live_1_3_0
 
-tar -acvf camellya-patch-win64.zip -C build .
+tar -acvf wicked-waifus-win-patch-win64.zip -C build .
