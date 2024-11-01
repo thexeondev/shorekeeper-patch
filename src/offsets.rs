@@ -63,7 +63,7 @@ pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
     #[cfg(not(feature = "enable-sdk"))]
     disable_sdk: DisableSdkConfiguration{
         sdk_dll: s!("KRSDK.dll"),
-        eula_accept: 0x94710,
-        sdk_go_away: 0x9FE10
+        eula_accept: 0x95440,
+        sdk_go_away: 0xA1280
     }
 };
