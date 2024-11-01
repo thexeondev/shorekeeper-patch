@@ -1,8 +1,9 @@
+use std::sync::OnceLock;
 use std::thread;
 use std::time::Duration;
 
 use ilhook::x64::Registers;
-use windows::core::{PCSTR, PCWSTR, w};
+use windows::core::{PCSTR, PCWSTR};
 use windows::Win32::Foundation::HINSTANCE;
 use windows::Win32::System::Console;
 use windows::Win32::System::LibraryLoader::GetModuleHandleA;
@@ -11,8 +12,13 @@ use windows::Win32::System::SystemServices::DLL_PROCESS_ATTACH;
 use interceptor::Interceptor;
 use offsets::CONFIG;
 
+use crate::replacer::{GenericReplacer, Replacer};
+
 mod interceptor;
 mod offsets;
+mod replacer;
+
+static CFG_SERVER_REPLACER: OnceLock<GenericReplacer> = OnceLock::new();
 
 fn thread_func() {
     unsafe { Console::AllocConsole() }.unwrap();
@@ -64,13 +70,22 @@ fn thread_func() {
 unsafe extern "win64" fn on_kurohttp_get(reg: *mut Registers, _: usize) {
     let wstr = *((*reg).rcx as *const usize) as *mut u16;
     let url = PCWSTR::from_raw(wstr).to_string().unwrap();
-
     println!("HTTP GET: {url}");
-    if url.ends_with("/index.json") {
-        println!("index.json requested, redirecting");
-        let new_wstr = w!("http://127.0.0.1:10001/index.json");
+    
+    let replacer = CFG_SERVER_REPLACER.get_or_init(|| {
+        GenericReplacer {
+            regex: regex::Regex::new(r#"^(?:https|http)://.*/([a-zA-Z0-9]{32}/index\.json)$"#).unwrap(),
+            replacement: std::env::var("CFG_SERVER_URL").unwrap_or("127.0.0.1:10001".to_string()),
+            scheme: std::env::var("CFG_SERVER_SCHEME").unwrap_or("http".to_string()),
+        }
+    });
+    
+    if let Some(result) = replacer.replace(url.as_str()) {
+        println!("Redirecting to: {result}");
+        let new_url = widestring::U16String::from_str(result.as_str());
+        let new_wstr = PCWSTR::from_raw(new_url.as_ptr());
         std::ptr::copy_nonoverlapping(new_wstr.as_ptr(), wstr, new_wstr.as_wide().len() + 2);
-    }
+    };
 }
 
 unsafe extern "win64" fn fpakfile_check_replacement(
