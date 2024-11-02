@@ -13,11 +13,14 @@ cn_beta_1_3_0 = []
 cn_live_1_3_0 = []
 os_live_1_3_0 = []
 enable-sdk = []
+only-sig-bypass = []
+regular = ["dep:regex", "dep:widestring"]
 
 [dependencies]
 ilhook = "2.1.1"
-regex = "1.11.1"
-widestring = "1.1.0"
+interceptor-rs = { git = "https://git.xeondev.com/xavo95/interceptor-rs.git" }
+regex = {version = "1.11.1", optional = true}
+widestring = {version = "1.1.0", optional = true}
 windows = { version = "0.58.0", features = [
 	"Win32_Foundation",
 	"Win32_System_LibraryLoader",

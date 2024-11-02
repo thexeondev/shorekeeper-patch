@@ -1,7 +1,7 @@
-#[cfg(not(feature = "enable-sdk"))]
+#[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
 use windows::core::{PCSTR, s};
 
-#[cfg(not(feature = "enable-sdk"))]
+#[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
 pub(crate) struct DisableSdkConfiguration {
     pub(crate) sdk_dll: PCSTR,
     pub(crate) eula_accept: usize,
@@ -11,8 +11,9 @@ pub(crate) struct DisableSdkConfiguration {
 pub(crate) struct InjectConfiguration {
     pub(crate) f_pak_file_check: usize,
     pub(crate) f_pak_file_check_preamble: u64,
+    #[cfg(all(not(feature = "only-sig-bypass"), feature = "regular"))]
     pub(crate) kuro_http_get: usize,
-    #[cfg(not(feature = "enable-sdk"))]
+    #[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
     pub(crate) disable_sdk: DisableSdkConfiguration,
 }
 
@@ -20,8 +21,9 @@ pub(crate) struct InjectConfiguration {
 pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
     f_pak_file_check: 0x3E37D90, // 0x3E37D90
     f_pak_file_check_preamble: 0x8148574157565340,
+    #[cfg(all(not(feature = "only-sig-bypass"), feature = "regular"))]
     kuro_http_get: 0xFE9E00,
-    #[cfg(not(feature = "enable-sdk"))]
+    #[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
     disable_sdk: DisableSdkConfiguration{
         sdk_dll: s!("KRSDKEx.dll"),
         eula_accept: 0x4A6D0,
@@ -33,8 +35,9 @@ pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
 pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
     f_pak_file_check: 0x3D2F460,
     f_pak_file_check_preamble: 0x8148574157565340,
+    #[cfg(all(not(feature = "only-sig-bypass"), feature = "regular"))]
     kuro_http_get: 0xFC8CF0,
-    #[cfg(not(feature = "enable-sdk"))]
+    #[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
     disable_sdk: DisableSdkConfiguration{
         sdk_dll: s!("KRSDKEx.dll"),
         eula_accept: 0x4A690,
@@ -46,8 +49,9 @@ pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
 pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
     f_pak_file_check: 0x3D35DF0,
     f_pak_file_check_preamble: 0x8148574157565340,
+    #[cfg(all(not(feature = "only-sig-bypass"), feature = "regular"))]
     kuro_http_get: 0xFC9900,
-    #[cfg(not(feature = "enable-sdk"))]
+    #[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
     disable_sdk: DisableSdkConfiguration{
         sdk_dll: s!("KRSDKEx.dll"),
         eula_accept: 0x4A690,
@@ -59,8 +63,9 @@ pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
 pub(crate) const CONFIG: InjectConfiguration = InjectConfiguration {
     f_pak_file_check: 0x3CDC430,
     f_pak_file_check_preamble: 0x8148574157565340,
+    #[cfg(all(not(feature = "only-sig-bypass"), feature = "regular"))]
     kuro_http_get: 0xFC6C20,
-    #[cfg(not(feature = "enable-sdk"))]
+    #[cfg(all(not(feature = "enable-sdk"), not(feature = "only-sig-bypass"), feature = "regular"))]
     disable_sdk: DisableSdkConfiguration{
         sdk_dll: s!("KRSDK.dll"),
         eula_accept: 0x95440,

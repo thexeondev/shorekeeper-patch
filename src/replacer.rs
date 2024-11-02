@@ -1,3 +1,4 @@
+#![cfg(all(not(feature = "only-sig-bypass"), feature = "regular"))]
 pub(crate) trait Replacer {
     fn replace(&self, original: &str) -> Option<String>;
 }

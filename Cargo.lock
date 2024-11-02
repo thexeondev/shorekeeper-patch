@@ -42,6 +42,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "interceptor-rs"
+version = "0.1.0"
+source = "git+https://git.xeondev.com/xavo95/interceptor-rs.git#282da6f98b8e4a4e9844422343d4ce11606c9de6"
+dependencies = [
+ "ilhook",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -148,6 +156,7 @@ name = "wicked-waifus-win-patch"
 version = "0.1.0"
 dependencies = [
  "ilhook",
+ "interceptor-rs",
  "regex",
  "widestring",
  "windows",
