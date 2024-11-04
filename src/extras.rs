@@ -52,7 +52,7 @@ unsafe extern "win64" fn on_kurohttp_get(reg: *mut Registers, _: usize) {
     if let Some(result) = replacer.replace(url.as_str()) {
         println!("Redirecting to: {result}");
         // TODO: Track https://doc.rust-lang.org/nightly/unstable-book/library-features/str-from-utf16-endian.html to replace widestring when stabilized
-        let new_url = widestring::U16String::from_str(result.as_str());
+        let new_url = widestring::U16CString::from_str(result.as_str()).unwrap();
         let new_wstr = PCWSTR::from_raw(new_url.as_ptr());
         std::ptr::copy_nonoverlapping(new_wstr.as_ptr(), wstr, new_wstr.as_wide().len() + 2);
     };
