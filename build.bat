@@ -15,12 +15,10 @@ EXIT /B 0
     SETLOCAL ENABLEDELAYEDEXPANSION
         : Build for cn_beta_1_4_0
         call:cargoReleaseBuild "cn_beta_1_4_0,%~1" %~1
-        : Build for cn_beta_1_3_0
-        call:cargoReleaseBuild "cn_beta_1_3_0,%~1" %~1
         : Build for cn_live_1_3_0
-        call:cargoReleaseBuild "cn_live_1_3_0,%~1" %~1
+        call:cargoReleaseBuild "cn_live_1_4_0,%~1" %~1
         : Build for os_live_1_3_0
-        call:cargoReleaseBuild "os_live_1_3_0,%~1" %~1
+        call:cargoReleaseBuild "os_live_1_4_0,%~1" %~1
     ENDLOCAL
 EXIT /B 0
 
